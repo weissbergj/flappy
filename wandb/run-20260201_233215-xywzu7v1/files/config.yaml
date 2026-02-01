@@ -1,0 +1,133 @@
+_wandb:
+    value:
+        cli_version: 0.24.1
+        e:
+            pvnuay1socrh7nzmbdsldgewx4sp4hpm:
+                args:
+                    - --mode
+                    - ar
+                    - --train_bin
+                    - /home/ubuntu/Jared/attempt/data/gpt2tok_c4_100_text_document.bin
+                    - --val_bin
+                    - /home/ubuntu/Jared/attempt/data/gpt2tok_c4_val_text_document.bin
+                    - --seq_len
+                    - "512"
+                    - --batch_size
+                    - "8"
+                    - --steps
+                    - "40000"
+                    - --offset_tokens
+                    - "0"
+                    - --max_tokens
+                    - "25000000"
+                    - --out_dir
+                    - outputs/ar_25M
+                cpu_count: 104
+                cpu_count_logical: 104
+                cudaVersion: "12.6"
+                disk:
+                    /:
+                        total: "3148696416256"
+                        used: "57883324416"
+                email: jared1@stanford.edu
+                executable: /usr/bin/python3
+                git:
+                    commit: 55780187a9ffb1e16b0d371201bfc27339bb5b1d
+                    remote: git@github.com:weissbergj/flappy.git
+                gpu: NVIDIA H100 80GB HBM3
+                gpu_count: 8
+                gpu_nvidia:
+                    - architecture: Hopper
+                      cudaCores: 16896
+                      memoryTotal: "85520809984"
+                      name: NVIDIA H100 80GB HBM3
+                      uuid: GPU-17d02d68-589a-1a8d-c6a1-52756b820110
+                    - architecture: Hopper
+                      cudaCores: 16896
+                      memoryTotal: "85520809984"
+                      name: NVIDIA H100 80GB HBM3
+                      uuid: GPU-18c20b70-06e9-b4a3-1d7f-05495d9e8e93
+                    - architecture: Hopper
+                      cudaCores: 16896
+                      memoryTotal: "85520809984"
+                      name: NVIDIA H100 80GB HBM3
+                      uuid: GPU-9b20afba-9819-80d8-e492-8048c5c2c335
+                    - architecture: Hopper
+                      cudaCores: 16896
+                      memoryTotal: "85520809984"
+                      name: NVIDIA H100 80GB HBM3
+                      uuid: GPU-767c1b79-11db-071e-0d5c-67bdda052a38
+                    - architecture: Hopper
+                      cudaCores: 16896
+                      memoryTotal: "85520809984"
+                      name: NVIDIA H100 80GB HBM3
+                      uuid: GPU-e2d3f577-770f-d27a-cca4-5752e62df27f
+                    - architecture: Hopper
+                      cudaCores: 16896
+                      memoryTotal: "85520809984"
+                      name: NVIDIA H100 80GB HBM3
+                      uuid: GPU-dbdbc429-1e74-8a1e-efbc-b59ae8822835
+                    - architecture: Hopper
+                      cudaCores: 16896
+                      memoryTotal: "85520809984"
+                      name: NVIDIA H100 80GB HBM3
+                      uuid: GPU-25954dea-f71c-9a25-dd38-e767694116ab
+                    - architecture: Hopper
+                      cudaCores: 16896
+                      memoryTotal: "85520809984"
+                      name: NVIDIA H100 80GB HBM3
+                      uuid: GPU-5520fbf4-287a-5c98-eaa4-5b8c28b5fe08
+                host: g120
+                memory:
+                    total: "1081662500864"
+                os: Linux-5.15.0-168-generic-x86_64-with-glibc2.35
+                program: -m src.train
+                python: CPython 3.10.12
+                root: /home/ubuntu/Jared/attempt
+                startedAt: "2026-02-01T23:32:15.347548Z"
+                writerId: pvnuay1socrh7nzmbdsldgewx4sp4hpm
+        m: []
+        python_version: 3.10.12
+        t:
+            "1":
+                - 1
+            "2":
+                - 1
+            "3":
+                - 2
+                - 13
+                - 16
+            "4": 3.10.12
+            "5": 0.24.1
+            "12": 0.24.1
+            "13": linux-x86_64
+batch_size:
+    value: 8
+d_model:
+    value: 512
+eval_batches:
+    value: 50
+eval_every:
+    value: 200
+lr:
+    value: 0.0003
+max_tokens:
+    value: 25000000
+mode:
+    value: ar
+n_heads:
+    value: 8
+n_layers:
+    value: 8
+offset_tokens:
+    value: 0
+out_dir:
+    value: outputs/ar_25M
+seq_len:
+    value: 512
+steps:
+    value: 40000
+train_bin:
+    value: /home/ubuntu/Jared/attempt/data/gpt2tok_c4_100_text_document.bin
+val_bin:
+    value: /home/ubuntu/Jared/attempt/data/gpt2tok_c4_val_text_document.bin

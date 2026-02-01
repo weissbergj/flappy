@@ -1,0 +1,12 @@
+{"time":"2026-02-01T21:28:04.034917945Z","level":"INFO","msg":"stream: starting","core version":"0.24.1"}
+{"time":"2026-02-01T21:28:04.324807537Z","level":"INFO","msg":"stream: created new stream","id":"kf7dvody"}
+{"time":"2026-02-01T21:28:04.324868103Z","level":"INFO","msg":"handler: started","stream_id":"kf7dvody"}
+{"time":"2026-02-01T21:28:04.324943131Z","level":"INFO","msg":"stream: started","id":"kf7dvody"}
+{"time":"2026-02-01T21:28:04.324958085Z","level":"INFO","msg":"writer: started","stream_id":"kf7dvody"}
+{"time":"2026-02-01T21:28:04.324966344Z","level":"INFO","msg":"sender: started","stream_id":"kf7dvody"}
+{"time":"2026-02-01T21:29:44.528223985Z","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2026-02-01T21:29:44.681271746Z","level":"INFO","msg":"handler: operation stats","stats":{}}
+{"time":"2026-02-01T21:29:44.684480455Z","level":"INFO","msg":"stream: closing","id":"kf7dvody"}
+{"time":"2026-02-01T21:29:44.684490878Z","level":"INFO","msg":"handler: closed","stream_id":"kf7dvody"}
+{"time":"2026-02-01T21:29:44.684579929Z","level":"INFO","msg":"sender: closed","stream_id":"kf7dvody"}
+{"time":"2026-02-01T21:29:44.684595104Z","level":"INFO","msg":"stream: closed","id":"kf7dvody"}
