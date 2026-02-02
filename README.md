@@ -1,19 +1,34 @@
 # Recreating Results from *Diffusion Beats Autoregressive in Data-Constrained Settings*
 
-This is a time-constrained retest of four key questions in  
-[Prabhudesai et al., *Diffusion Beats Autoregressive in Data-Constrained Settings* (2024)](https://arxiv.org/pdf/2507.15857): Do autoregressive models outperform Diffusion models in data-constrained settings? When does this occur? What is the interactive scaling law behind these constraints? Why would autoregressive models outperform Diffusion models in data-constrained settings?
+This repo contains a time-constrained replication of several core claims from [Prabhudesai et al., *Diffusion Beats Autoregressive in Data-Constrained Settings* (2024)](https://arxiv.org/pdf/2507.15857). 
+I compare Autoregressive (AR) vs masked Diffusion language modeling (MDM) under limited unique data and repeated passes.
 
-To investigate these questions, I naively construct a comparable architecture across both models and test these models' performance on varied token sizes and compute. I then extrapolate a potential scaling law from points where the models' losses intersect and attempt to isolate the reason for a Diffusion model's potentially superior performance in data-constrained settings. My findings are largely consistent with Prabhudesai et al. (2025).
+## What I test
+I focus on four key questions: 
 
-**Full results:** [View full report](Recreating Results from Diffusion Beats Autoregressive in Data-Constrained Settings.pdf)
+1. Do Diffusion models outperform Autoregressive models in data-constrained settings?
+2. When does this occur?
+3. What is the interactive scaling law behind these constraints?
+4. Why would Diffusion models outperform Autoregressive models in data-constrained settings?
 
-Please install dependencies with 
-install.sh  
+To investigate these questions, I construct a comparable architecture across both models and test these models' performance on varied token sizes and compute. I then extrapolate a potential scaling law from points where the models' losses intersect and attempt to isolate the reason for a Diffusion model's potentially superior performance in data-constrained settings. My findings are largely consistent with Prabhudesai et al. (2025).
 
-Download the C4 dataset using
-download.sh
+## Report
 
-To recreate the robust autoregressive and Diffusion runs using Model B architecture, use 
-run_all.sh.
+**Full results:** [View full report](Recreating%20Results%20from%20Diffusion%20Beats%20Autoregressive%20in%20Data-Constrained%20Settings.pdf)
 
-Make sure you point to the correct TRAIN_BIN and VAL_BIN. You can adjust the architecture by changing src.train to src.train_minimal.
+
+## Quickstart
+
+### 1) Install dependencies
+bash install.sh
+
+### 2) Download / prepare dataset
+bash download.sh
+
+### 3) Run all main experiments (AR + Diffusion)
+bash run_all.sh
+
+### Notes
+- Ensure TRAIN_BIN and VAL_BIN point to the correct dataset files.
+- To change the architecture, modify the entrypoint from src.train to src.train_minimal inside run_all.sh.
