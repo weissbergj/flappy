@@ -15,7 +15,7 @@ OUT_ROOT="${OUT_ROOT:-outputs}"
 for mode in ar mdm; do
   for tokens in 25000000 50000000 100000000; do
     tag="$((tokens/1000000))M"
-    out_dir="${OUT_ROOT}/${mode}_${tag}"
+    out_dir="${OUT_ROOT}/${mode}_${tag}_update"
     mkdir -p "$out_dir"
 
     torchrun --standalone --nproc_per_node="$NPROC" -m src.train \

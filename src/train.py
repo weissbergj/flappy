@@ -1,5 +1,5 @@
 # src/train.py
-import os, time, argparse
+import os, time, argparse, math
 import torch
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
@@ -13,6 +13,7 @@ from src.model import TinyTransformerLM
 # +1 vocab slot for a real [MASK] token
 VOCAB_SIZE = 50258
 MASK_ID = 50257
+EVAL_R = 0.3
 
 
 def ar_loss(logits, y):
@@ -23,46 +24,35 @@ def ar_loss(logits, y):
     )
 
 
-
 def mdm_step(model, x, device):
     """
-    Masked Diffusion LM step:
-    - sample mask ratio r
+    Masked Diffusion LM step (paper-aligned):
+    - sample r ~ U(0,1) (clamped to avoid degenerate 0/1)
     - mask tokens with prob r
-    - predict original tokens at masked positions
-    - normalize by expected masked count (paper-style)
+    - loss ~= (1/r) * mean CE over masked tokens
     """
-    x = x.to(device)
+    x = x.to(device, non_blocking=True)
     targets = x
 
-    # sample r in paper-reasonable range (avoid nearly-full masking)
-    r = torch.empty((), device=device).uniform_(0.15, 0.5)
-
-    # mask = (torch.rand_like(x.float()) < r)
-
-    # # guarantee at least one masked token
-    # if not mask.any():
-    #     mask.view(-1)[0] = True
+    r = torch.rand((), device=device).clamp(0.01, 0.99)
 
     mask = (torch.rand_like(x.float()) < r)   # (B,T)
-    need = ~mask.any(dim=1)                   # (B,)
+    need = ~mask.any(dim=1)
     if need.any():
         mask[need, 0] = True
 
     corrupted = x.masked_fill(mask, MASK_ID)
     logits = model(corrupted)
 
-    B, T = x.shape
-    denom = r * (B * T)  # expected masked tokens
-
-    ce_sum = F.cross_entropy(
+    ce_mean = F.cross_entropy(
         logits[mask],
         targets[mask],
-        reduction="sum"
+        reduction="mean"
     )
 
-    loss = ce_sum / denom
-    return loss
+    loss = ce_mean / r
+    masked_frac = mask.float().mean()
+    return loss, masked_frac, r
 
 
 def main():
@@ -120,6 +110,12 @@ def main():
     if ddp:
         model = DDP(model, device_ids=[local_rank], output_device=local_rank, broadcast_buffers=False)
 
+    # --- after model is on device (and after DDP wrap) ---
+    raw_model = model.module if isinstance(model, DDP) else model
+    n_params = sum(p.numel() for p in raw_model.parameters() if p.requires_grad)
+    if is_main:
+        wandb.log({"hparams/n_params": n_params})
+
     use_amp = device.startswith("cuda")
     autocast_dtype = torch.bfloat16
 
@@ -130,6 +126,18 @@ def main():
         eps=1e-8,
         weight_decay=0.1,
     )
+
+    warmup_steps = max(1, int(0.02 * args.steps))   # 2% warmup
+    min_lr = args.lr * 0.1                          # decay to 10% of base
+
+    def lr_scale(step: int):
+        if step < warmup_steps:
+            return step / warmup_steps
+        progress = (step - warmup_steps) / max(1, args.steps - warmup_steps)
+        cosine = 0.5 * (1.0 + math.cos(math.pi * progress))
+        return (min_lr / args.lr) + cosine * (1.0 - (min_lr / args.lr))
+
+    scheduler = torch.optim.lr_scheduler.LambdaLR(opt, lr_lambda=lr_scale)
 
     if is_main:
         wandb.log({"hparams/lr": args.lr})
@@ -161,9 +169,8 @@ def main():
     def eval_loss():
         model.eval()
         losses = []
-        if args.mode == "mdm":
-            rng_state = torch.get_rng_state()
-            torch.manual_seed(12345)
+        masked_fracs = [] if args.mode == "mdm" else None
+
         with torch.no_grad():
             it = iter(val_dl)
             for _ in range(args.eval_batches):
@@ -175,42 +182,57 @@ def main():
                     if args.mode == "ar":
                         logits = model(x)
                         loss = ar_loss(logits, y)
+                        masked_frac_batch = None
                     else:
-                        # Same objective as training: sample r ~ U(0.01, 0.99), random masks,
-                        # masked-only CE with 1/r normalization (apples-to-apples with AR val_loss)
-                        # r = torch.empty((), device=device).uniform_(0.01, 0.99)
-                        r = torch.tensor(0.3, device=device)
+                        # FIXED eval corruption rate (stable)
+                        r = x.new_tensor(EVAL_R)
                         mask = (torch.rand_like(x.float()) < r)
                         need = ~mask.any(dim=1)
                         if need.any():
                             mask[need, 0] = True
+
                         corrupted = x.masked_fill(mask, MASK_ID)
                         logits = model(corrupted)
 
-                        B, T = x.shape
-                        denom = r * (B * T)
-
-                        ce_sum = F.cross_entropy(
+                        # IMPORTANT: report UN-SCALED masked CE for eval (no /r)
+                        loss = F.cross_entropy(
                             logits[mask],
                             x[mask],
-                            reduction="sum"
+                            reduction="mean"
                         )
-                        loss = ce_sum / denom
+                        masked_frac_batch = mask.float().mean().item()
 
                 losses.append(loss.item())
+                if args.mode == "mdm":
+                    masked_fracs.append(masked_frac_batch)
 
-        if args.mode == "mdm":
-            torch.set_rng_state(rng_state)
         model.train()
+
         local_sum = sum(losses)
         local_count = len(losses)
+
         if ddp and dist.is_initialized():
             t_sum = torch.tensor([local_sum], device=device, dtype=torch.float32)
             t_count = torch.tensor([local_count], device=device, dtype=torch.float32)
             dist.all_reduce(t_sum)
             dist.all_reduce(t_count)
-            return (t_sum / t_count).item()
-        return local_sum / local_count
+            val_loss = (t_sum / t_count).item()
+        else:
+            val_loss = local_sum / local_count
+
+        if args.mode == "mdm":
+            local_mf_sum = sum(masked_fracs)
+            if ddp and dist.is_initialized():
+                t_mf_sum = torch.tensor([local_mf_sum], device=device, dtype=torch.float32)
+                t_mf_cnt = torch.tensor([local_count], device=device, dtype=torch.float32)
+                dist.all_reduce(t_mf_sum)
+                dist.all_reduce(t_mf_cnt)
+                val_masked_frac = (t_mf_sum / t_mf_cnt).item()
+            else:
+                val_masked_frac = local_mf_sum / local_count
+            return val_loss, val_masked_frac
+
+        return val_loss, None
 
     t0 = time.time()
 
@@ -225,11 +247,12 @@ def main():
                 logits = model(x)
                 loss = ar_loss(logits, y)
             else:
-                loss = mdm_step(model, x, device)
+                loss, masked_frac, r_mdm = mdm_step(model, x, device)
 
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
         opt.step()
+        scheduler.step()
 
         if is_main and step % 20 == 0:
             toks = args.batch_size * args.seq_len * world_size
@@ -238,23 +261,41 @@ def main():
                 f"step {step:6d} | loss {loss.item():.4f} "
                 f"| tok/step {toks} | it/s {it_s:.2f}"
             )
-            wandb.log({
+            tokens_seen = step * toks
+            flops_dense = 6 * n_params * tokens_seen
+            flops_pred = flops_dense * (masked_frac.item() if args.mode == "mdm" else 1.0)
+            log_dict = {
                 "train/loss": loss.item(),
                 "train/step": step,
                 "train/tokens_per_step": toks,
-                "train/tokens_seen": step * toks,
-            })
+                "train/tokens_seen": tokens_seen,
+                "train/flops_dense": flops_dense,
+                "train/flops_pred": flops_pred,
+                "train/lr": scheduler.get_last_lr()[0],
+            }
+            if args.mode == "mdm":
+                log_dict["train/masked_frac"] = masked_frac.item()
+                log_dict["train/r"] = r_mdm.item()
+            wandb.log(log_dict)
 
         if step % args.eval_every == 0:
-            vl = eval_loss()
+            vl, val_masked_frac = eval_loss()
             if is_main:
                 toks = args.batch_size * args.seq_len * world_size
+                tokens_seen = step * toks
+                flops_dense = 6 * n_params * tokens_seen
+                flops_pred = flops_dense * (val_masked_frac if val_masked_frac is not None else 1.0)
                 print(f"[eval] step {step:6d} | val_loss {vl:.4f}")
-                wandb.log({
+                eval_log = {
                     "val/loss": vl,
                     "val/step": step,
-                    "val/tokens_seen": step * toks,
-                })
+                    "val/tokens_seen": tokens_seen,
+                    "val/flops_dense": flops_dense,
+                    "val/flops_pred": flops_pred,
+                }
+                if val_masked_frac is not None:
+                    eval_log["val/masked_frac"] = val_masked_frac
+                wandb.log(eval_log)
 
 
     ckpt = os.path.join(args.out_dir, f"{args.mode}_final.pt")

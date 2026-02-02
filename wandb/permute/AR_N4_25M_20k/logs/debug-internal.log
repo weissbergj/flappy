@@ -1,0 +1,12 @@
+{"time":"2026-02-02T05:18:37.707862034Z","level":"INFO","msg":"stream: starting","core version":"0.24.1"}
+{"time":"2026-02-02T05:18:38.097053958Z","level":"INFO","msg":"stream: created new stream","id":"pys7ikcp"}
+{"time":"2026-02-02T05:18:38.097109958Z","level":"INFO","msg":"handler: started","stream_id":"pys7ikcp"}
+{"time":"2026-02-02T05:18:38.097201219Z","level":"INFO","msg":"stream: started","id":"pys7ikcp"}
+{"time":"2026-02-02T05:18:38.097218767Z","level":"INFO","msg":"sender: started","stream_id":"pys7ikcp"}
+{"time":"2026-02-02T05:18:38.097220022Z","level":"INFO","msg":"writer: started","stream_id":"pys7ikcp"}
+{"time":"2026-02-02T05:28:09.900957839Z","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2026-02-02T05:28:10.018432673Z","level":"INFO","msg":"handler: operation stats","stats":{}}
+{"time":"2026-02-02T05:28:10.022114202Z","level":"INFO","msg":"stream: closing","id":"pys7ikcp"}
+{"time":"2026-02-02T05:28:10.022129845Z","level":"INFO","msg":"handler: closed","stream_id":"pys7ikcp"}
+{"time":"2026-02-02T05:28:10.022212331Z","level":"INFO","msg":"sender: closed","stream_id":"pys7ikcp"}
+{"time":"2026-02-02T05:28:10.022218715Z","level":"INFO","msg":"stream: closed","id":"pys7ikcp"}

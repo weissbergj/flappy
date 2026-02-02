@@ -1,0 +1,1 @@
+{"hparams/lr":0.0003,"val/tokens_seen":1310720000,"train/loss":4.14047908782959,"val/step":40000,"_step":2200,"_runtime":853,"_wandb":{"runtime":853},"_timestamp":1.7699824358294618e+09,"train/tokens_seen":1310720000,"val/loss":3.7395997047424316,"train/step":40000,"train/tokens_per_step":32768}

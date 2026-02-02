@@ -1,0 +1,12 @@
+{"time":"2026-02-02T01:23:21.79743853Z","level":"INFO","msg":"stream: starting","core version":"0.24.1"}
+{"time":"2026-02-02T01:23:22.086942225Z","level":"INFO","msg":"stream: created new stream","id":"wan6cwlc"}
+{"time":"2026-02-02T01:23:22.088142525Z","level":"INFO","msg":"handler: started","stream_id":"wan6cwlc"}
+{"time":"2026-02-02T01:23:22.088249108Z","level":"INFO","msg":"stream: started","id":"wan6cwlc"}
+{"time":"2026-02-02T01:23:22.088264292Z","level":"INFO","msg":"writer: started","stream_id":"wan6cwlc"}
+{"time":"2026-02-02T01:23:22.088265534Z","level":"INFO","msg":"sender: started","stream_id":"wan6cwlc"}
+{"time":"2026-02-02T01:41:54.549144661Z","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2026-02-02T01:41:54.673066474Z","level":"INFO","msg":"handler: operation stats","stats":{}}
+{"time":"2026-02-02T01:41:54.676279727Z","level":"INFO","msg":"stream: closing","id":"wan6cwlc"}
+{"time":"2026-02-02T01:41:54.676288421Z","level":"INFO","msg":"handler: closed","stream_id":"wan6cwlc"}
+{"time":"2026-02-02T01:41:54.676370606Z","level":"INFO","msg":"sender: closed","stream_id":"wan6cwlc"}
+{"time":"2026-02-02T01:41:54.676376042Z","level":"INFO","msg":"stream: closed","id":"wan6cwlc"}

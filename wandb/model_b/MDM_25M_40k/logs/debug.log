@@ -1,0 +1,24 @@
+2026-02-02 02:17:33,918 INFO    MainThread:712845 [wandb_setup.py:_flush():81] Current SDK version is 0.24.1
+2026-02-02 02:17:33,919 INFO    MainThread:712845 [wandb_setup.py:_flush():81] Configure stats pid to 712845
+2026-02-02 02:17:33,919 INFO    MainThread:712845 [wandb_setup.py:_flush():81] Loading settings from environment variables
+2026-02-02 02:17:33,919 INFO    MainThread:712845 [wandb_init.py:setup_run_log_directory():717] Logging user logs to /home/ubuntu/Jared/attempt/wandb/run-20260202_021733-lxlcyfxv/logs/debug.log
+2026-02-02 02:17:33,919 INFO    MainThread:712845 [wandb_init.py:setup_run_log_directory():718] Logging internal logs to /home/ubuntu/Jared/attempt/wandb/run-20260202_021733-lxlcyfxv/logs/debug-internal.log
+2026-02-02 02:17:33,919 INFO    MainThread:712845 [wandb_init.py:init():844] calling init triggers
+2026-02-02 02:17:33,919 INFO    MainThread:712845 [wandb_init.py:init():849] wandb.init called with sweep_config: {}
+config: {'mode': 'mdm', 'train_bin': '/home/ubuntu/Jared/attempt/data/gpt2tok_c4_100_text_document.bin', 'val_bin': '/home/ubuntu/Jared/attempt/data/gpt2tok_c4_val_text_document.bin', 'seq_len': 512, 'offset_tokens': 0, 'max_tokens': 25000000, 'batch_size': 8, 'steps': 40000, 'lr': 0.0003, 'eval_every': 200, 'eval_batches': 50, 'd_model': 512, 'n_layers': 8, 'n_heads': 8, 'out_dir': 'outputs/mdm_25M_update', '_wandb': {}}
+2026-02-02 02:17:33,919 INFO    MainThread:712845 [wandb_init.py:init():892] starting backend
+2026-02-02 02:17:34,175 INFO    MainThread:712845 [wandb_init.py:init():895] sending inform_init request
+2026-02-02 02:17:34,179 INFO    MainThread:712845 [wandb_init.py:init():903] backend started and connected
+2026-02-02 02:17:34,192 INFO    MainThread:712845 [wandb_init.py:init():973] updated telemetry
+2026-02-02 02:17:34,196 INFO    MainThread:712845 [wandb_init.py:init():997] communicating run to backend with 90.0 second timeout
+2026-02-02 02:17:34,691 INFO    MainThread:712845 [wandb_init.py:init():1042] starting run threads in backend
+2026-02-02 02:17:34,788 INFO    MainThread:712845 [wandb_run.py:_console_start():2529] atexit reg
+2026-02-02 02:17:34,788 INFO    MainThread:712845 [wandb_run.py:_redirect():2377] redirect: wrap_raw
+2026-02-02 02:17:34,789 INFO    MainThread:712845 [wandb_run.py:_redirect():2446] Wrapping output streams.
+2026-02-02 02:17:34,789 INFO    MainThread:712845 [wandb_run.py:_redirect():2469] Redirects installed.
+2026-02-02 02:17:34,791 INFO    MainThread:712845 [wandb_init.py:init():1082] run started, returning control to user process
+2026-02-02 02:36:04,377 INFO    MainThread:712845 [wandb_run.py:_finish():2295] finishing run jared-weissberg/diffusion-vs-ar/lxlcyfxv
+2026-02-02 02:36:04,378 INFO    MainThread:712845 [wandb_run.py:_atexit_cleanup():2494] got exitcode: 0
+2026-02-02 02:36:04,378 INFO    MainThread:712845 [wandb_run.py:_restore():2476] restore
+2026-02-02 02:36:04,378 INFO    MainThread:712845 [wandb_run.py:_restore():2482] restore done
+2026-02-02 02:36:04,925 INFO    MainThread:712845 [wandb_run.py:_footer_sync_info():3871] logging synced files
